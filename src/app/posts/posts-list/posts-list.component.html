@@ -1,26 +1,35 @@
-<div class="min-h-screen bg-gray-200 p-8">
-  <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-    <h1 class="text-3xl font-semibold text-center text-gray-800 mb-4">POST CRUD</h1>
+<div class="min-h-screen bg-gray-100 p-2 md:p-8">
+  <div class="max-w-6xl mx-auto bg-white rounded-xl md:rounded-2xl shadow-lg p-4 md:p-8">
+    <h1
+      class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6 uppercase tracking-wider"
+    >
+      Post CRUD
+    </h1>
 
-    <div class="flex justify-center mb-6">
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
       <button
         routerLink="/posts/add"
-        class="bg-gray-800 text-white px-6 py-2 cursor-pointer rounded shadow hover:bg-black transition"
+        class="flex-1 sm:flex-none bg-gray-800 text-white px-6 py-2.5 rounded shadow hover:bg-black transition font-medium"
       >
-        Add Post
+        + Add Post
       </button>
       <button
         (click)="resetToDefault()"
-        class="bg-blue-500 text-white px-6 py-2 cursor-pointer rounded shadow hover:bg-blue-600 transition flex items-center gap-2"
+        class="flex-1 sm:flex-none bg-blue-500 text-white px-6 py-2.5 rounded shadow hover:bg-blue-600 transition flex items-center justify-center gap-2 font-medium"
       >
-        <span>🔄</span> Reset to Original Data
+        🔄 <span class="hidden sm:inline">Reset Data</span><span class="sm:hidden">Reset</span>
       </button>
     </div>
 
-    <div class="flex justify-between items-center mb-4 text-sm text-gray-600">
-      <div>
+    <div
+      class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4 text-sm text-gray-600"
+    >
+      <div class="bg-gray-50 p-2 rounded-lg border">
         Show
-        <select [(ngModel)]="pageSize" class="border rounded px-2 py-1 mx-1">
+        <select
+          [(ngModel)]="pageSize"
+          class="bg-transparent border-none focus:ring-0 font-bold text-blue-600"
+        >
           <option [value]="5">5</option>
           <option [value]="10">10</option>
           <option [value]="25">25</option>
@@ -29,81 +38,80 @@
       </div>
     </div>
 
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+    <div class="overflow-x-auto border rounded-xl">
+      <table class="w-full text-left border-collapse min-w-[700px]">
         <thead>
-          <tr class="border-b-2 border-gray-200 text-gray-700">
-            <th class="py-3 px-4">#</th>
-            <th class="py-3 px-4">Title</th>
-            <th class="py-3 px-4">Body Preview</th>
-            <th class="py-3 px-4 text-center">Action</th>
+          <tr class="bg-gray-50 border-b-2 border-gray-200 text-gray-700">
+            <th class="py-4 px-4 font-bold uppercase text-xs">#</th>
+            <th class="py-4 px-4 font-bold uppercase text-xs">Title</th>
+            <th class="py-4 px-4 font-bold uppercase text-xs">Body Preview</th>
+            <th class="py-4 px-4 font-bold uppercase text-xs text-center">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let post of pagedPosts" class="border-b border-gray-100 hover:bg-gray-50">
-            <td class="py-3 px-4">{{ post.id }}</td>
-            <td class="py-3 px-4 font-medium">{{ post.title | slice: 0 : 20 }}...</td>
-            <td class="py-3 px-4 text-gray-500">{{ post.body | slice: 0 : 50 }}...</td>
-            <td class="py-3 px-4 text-center">
-              <button
-                [routerLink]="['/posts', post.id]"
-                class="bg-blue-500 text-white px-3 py-1 cursor-pointer rounded text-sm mr-2 hover:bg-blue-600 transition shadow-sm"
-              >
-                View
-              </button>
-              <button
-                [routerLink]="['/posts/edit', post.id]"
-                class="bg-gray-500 text-white px-3 py-1 cursor-pointer rounded text-sm mr-2 hover:bg-gray-600"
-              >
-                Edit
-              </button>
-              <button
-                (click)="deletePost(post.id)"
-                class="bg-red-500 text-white px-3 py-1 cursor-pointer rounded text-sm hover:bg-red-600"
-              >
-                Delete
-              </button>
+        <tbody class="divide-y divide-gray-100">
+          <tr *ngFor="let post of pagedPosts" class="hover:bg-blue-50/50 transition">
+            <td class="py-4 px-4 text-gray-400 font-mono">{{ post.id }}</td>
+            <td class="py-4 px-4 font-semibold text-gray-800">
+              {{ post.title | slice: 0 : 25 }}...
+            </td>
+            <td class="py-4 px-4 text-gray-500 italic">{{ post.body | slice: 0 : 40 }}...</td>
+            <td class="py-4 px-4 text-center whitespace-nowrap">
+              <div class="flex justify-center gap-1.5">
+                <button
+                  [routerLink]="['/posts', post.id]"
+                  class="p-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition"
+                >
+                  View
+                </button>
+                <button
+                  [routerLink]="['/posts/edit', post.id]"
+                  class="p-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition"
+                >
+                  Edit
+                </button>
+                <button
+                  (click)="deletePost(post.id)"
+                  class="p-2 bg-red-100 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div class="flex justify-between items-center mt-6">
-      <div class="text-sm text-gray-500">
+    <div class="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
+      <div class="text-sm text-gray-500 font-medium order-2 md:order-1">
         Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ currentPage * pageSize }} of
-        {{ totalItems }} entries
+        {{ totalItems }}
       </div>
 
-      <div class="inline-flex shadow-sm rounded-md">
+      <nav class="inline-flex rounded-lg shadow-sm border overflow-hidden order-1 md:order-2">
         <button
           (click)="changePage(currentPage - 1)"
           [disabled]="currentPage === 1"
-          class="px-4 py-2 border rounded-l-md bg-white hover:bg-gray-50 disabled:opacity-50"
+          class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30 border-r"
         >
-          Previous
+          Prev
         </button>
-
         <button
           *ngFor="let page of [1, 2, 3]"
           (click)="changePage(page)"
-          [ngClass]="{
-            'bg-blue-600 text-white': currentPage === page,
-            'bg-white text-gray-700': currentPage !== page,
-          }"
-          class="px-4 py-2 border-t border-b hover:bg-gray-100"
+          [ngClass]="{ 'bg-blue-600 text-white': currentPage === page }"
+          class="hidden sm:block px-4 py-2 border-r hover:bg-blue-50 transition"
         >
           {{ page }}
         </button>
-
         <button
           (click)="changePage(currentPage + 1)"
           [disabled]="currentPage * pageSize >= totalItems"
-          class="px-4 py-2 border rounded-r-md bg-white hover:bg-gray-50 disabled:opacity-50"
+          class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30"
         >
           Next
         </button>
-      </div>
+      </nav>
     </div>
   </div>
 </div>
