@@ -4,14 +4,14 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   {
     path: 'posts/edit/:id',
-    renderMode: RenderMode.Client, // بنقول لـ Angular: المسار ده سيبيه للمتصفح (Client) مكيش دعوة بيه في الـ Build
+    renderMode: RenderMode.Client,
   },
   {
     path: 'posts/:id',
-    renderMode: RenderMode.Client, // نفس الكلام لصفحة التفاصيل
+    renderMode: RenderMode.Client,
   },
   {
-    path: '**', // أي مسار تاني (زي الـ List والـ Add)
+    path: '**',
     renderMode: RenderMode.Prerender,
   },
 ];

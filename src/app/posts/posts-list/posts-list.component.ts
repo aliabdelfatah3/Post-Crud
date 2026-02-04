@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-posts-list',
-  standalone: true, // تأكد إنها موجودة
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './posts-list.component.html',
   styleUrl: './posts-list.component.css',
@@ -20,8 +20,6 @@ export class PostsListComponent implements OnInit {
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
-    // بدل ما ننادي loadPosts مرة واحدة، هنشترك (Subscribe) في الـ Observable
-    // اللي جاي من الـ Service عشان أي تغيير في الـ LocalStorage يظهر هنا فوراً
     this.postService.posts$.subscribe({
       next: (data) => {
         this.posts = data;
@@ -30,12 +28,11 @@ export class PostsListComponent implements OnInit {
     });
   }
 
-  // الدالة دي بنستخدمها بس لو حابب تجبر الأبلكيشن يحدث من الـ API (زرار الـ Reset)
   resetToDefault() {
     if (confirm('Are you sure you want to reset all data and reload original posts?')) {
-      localStorage.removeItem('my_posts'); // بنمسح المخزن
-      this.postService.refreshFromApi(); // بنخلي الـ service تجيب داتا جديدة
-      this.currentPage = 1; // بنرجع لأول صفحة
+      localStorage.removeItem('my_posts');
+      this.postService.refreshFromApi();
+      this.currentPage = 1;
     }
   }
 
@@ -50,12 +47,10 @@ export class PostsListComponent implements OnInit {
 
   deletePost(id: number) {
     if (confirm('Are you sure?')) {
-      // هنا بننادي دالة الحذف من الـ Service اللي عدلناها عشان تشيله من الـ LocalStorage
       this.postService.deletePost(id);
     }
   }
 
-  // دالة مساعدة عشان نحسب عدد الصفحات بناءً على الـ pageSize
   get totalPages(): number {
     return Math.ceil(this.totalItems / this.pageSize);
   }
