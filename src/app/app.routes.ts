@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { POSTS_ROUTES } from './posts/posts.routes';
 
 export const routes: Routes = [
   {

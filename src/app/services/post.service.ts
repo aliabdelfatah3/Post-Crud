@@ -50,7 +50,6 @@ export class PostService {
       catchError((err) => {
         console.error('[refreshFromApi] ERROR:', err);
 
-        // fallback: read from localStorage if available
         if (isPlatformBrowser(this.platformId)) {
           const localData = localStorage.getItem('my_posts');
           if (localData) {
@@ -59,13 +58,11 @@ export class PostService {
               this.postsSubject.next(parsed);
               return of(parsed);
             } catch {
-              // if localStorage is corrupted, remove it
               localStorage.removeItem('my_posts');
             }
           }
         }
 
-        // final fallback
         return of([] as Post[]);
       }),
     );
@@ -139,7 +136,7 @@ export class PostService {
 
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('my_posts', JSON.stringify(posts));
-      // console.log('[updateStorage] saved to localStorage ✅');
+      // console.log('[updateStorage] saved to localStorage ');
     }
     this.postsSubject.next(posts);
   }

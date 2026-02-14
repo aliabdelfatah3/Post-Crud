@@ -13,7 +13,6 @@ export class PaginationComponent {
   @Input() pageSize = 10;
   @Input() currentPage = 1;
 
-  // اختياري
   @Input() pageSizeOptions: number[] = [5, 10, 25];
 
   @Output() pageChange = new EventEmitter<number>();
