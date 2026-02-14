@@ -1,0 +1,52 @@
+<!-- Hide كله لو مفيش داتا -->
+<div *ngIf="totalItems > 0" class="mt-8">
+  <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+    <!-- Page size -->
+    <div class="bg-gray-50 p-2 rounded-lg border text-sm text-gray-600">
+      Show
+      <select
+        class="bg-transparent border-none focus:ring-0 font-bold text-blue-600"
+        [ngModel]="pageSize"
+        (ngModelChange)="onChangePageSize($event)"
+      >
+        <option *ngFor="let opt of pageSizeOptions" [ngValue]="opt">
+          {{ opt }}
+        </option>
+      </select>
+      entries
+    </div>
+
+    <!-- Showing text -->
+    <div class="text-sm text-gray-500 font-medium">
+      Showing {{ startItem }} to {{ endItem }} of {{ totalItems }}
+    </div>
+
+    <!-- Nav -->
+    <nav class="inline-flex rounded-lg shadow-sm border overflow-hidden">
+      <button
+        (click)="onPrev()"
+        [disabled]="currentPage === 1"
+        class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30 border-r"
+      >
+        Prev
+      </button>
+
+      <button
+        *ngFor="let page of pages"
+        (click)="onSelectPage(page)"
+        [ngClass]="{ 'bg-blue-600 text-white': currentPage === page }"
+        class="hidden sm:block px-4 py-2 border-r hover:bg-blue-50 transition"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        (click)="onNext()"
+        [disabled]="currentPage >= totalPages"
+        class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30"
+      >
+        Next
+      </button>
+    </nav>
+  </div>
+</div>

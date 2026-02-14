@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PostService } from '../../services/post.service';
+import { Post } from '../../models/post.model';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-post-details',
@@ -10,7 +12,9 @@ import { PostService } from '../../services/post.service';
   templateUrl: './post-details.component.html',
 })
 export class PostDetailsComponent implements OnInit {
-  post: any;
+  post?: Post;
+
+  isLoading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -18,9 +22,20 @@ export class PostDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.params['id'];
-    this.postService.getPost(id).subscribe((data) => {
-      this.post = data;
-    });
+    const idParam = this.route.snapshot.params['id'];
+    const id = idParam ? Number(idParam) : null;
+
+    if (id === null) {
+      this.isLoading = false;
+      return;
+    }
+
+    this.postService
+      .getPost(id)
+      .pipe(take(1))
+      .subscribe((data) => {
+        this.post = data;
+        this.isLoading = false;
+      });
   }
 }

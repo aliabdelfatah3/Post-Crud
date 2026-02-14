@@ -21,97 +21,74 @@
       </button>
     </div>
 
-    <div
-      class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4 text-sm text-gray-600"
-    >
-      <div class="bg-gray-50 p-2 rounded-lg border">
-        Show
-        <select
-          [(ngModel)]="pageSize"
-          class="bg-transparent border-none focus:ring-0 font-bold text-blue-600"
-        >
-          <option [value]="5">5</option>
-          <option [value]="10">10</option>
-          <option [value]="25">25</option>
-        </select>
-        entries
-      </div>
-    </div>
-
     <div class="overflow-x-auto border rounded-xl">
-      <table class="w-full text-left border-collapse min-w-[700px]">
-        <thead>
-          <tr class="bg-gray-50 border-b-2 border-gray-200 text-gray-700">
-            <th class="py-4 px-4 font-bold uppercase text-xs">#</th>
-            <th class="py-4 px-4 font-bold uppercase text-xs">Title</th>
-            <th class="py-4 px-4 font-bold uppercase text-xs">Body Preview</th>
-            <th class="py-4 px-4 font-bold uppercase text-xs text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-          <tr *ngFor="let post of pagedPosts" class="hover:bg-blue-50/50 transition">
-            <td class="py-4 px-4 text-gray-400 font-mono">{{ post.id }}</td>
-            <td class="py-4 px-4 font-semibold text-gray-800">
-              {{ post.title | slice: 0 : 25 }}...
-            </td>
-            <td class="py-4 px-4 text-gray-500 italic">{{ post.body | slice: 0 : 40 }}...</td>
-            <td class="py-4 px-4 text-center whitespace-nowrap">
-              <div class="flex justify-center gap-1.5">
-                <button
-                  [routerLink]="['/posts', post.id]"
-                  class="p-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition"
-                >
-                  View
-                </button>
-                <button
-                  [routerLink]="['/posts/edit', post.id]"
-                  class="p-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition"
-                >
-                  Edit
-                </button>
-                <button
-                  (click)="deletePost(post.id)"
-                  class="p-2 bg-red-100 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
-                >
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <ng-container *ngIf="pagedPosts$ | async as posts">
+        <!-- ✅ Loading -->
+        <div *ngIf="isLoading" class="text-center py-10 text-gray-500">Loading posts...</div>
+
+        <!-- ✅ Empty -->
+        <div *ngIf="!isLoading && posts.length === 0" class="text-center py-10 text-gray-500">
+          No posts available
+        </div>
+
+        <!-- Posts table -->
+        <table
+          *ngIf="!isLoading && posts.length > 0"
+          class="w-full text-left border-collapse min-w-[700px]"
+        >
+          <thead>
+            <tr class="bg-gray-50 border-b-2 border-gray-200 text-gray-700">
+              <th class="py-4 px-4 font-bold uppercase text-xs">#</th>
+              <th class="py-4 px-4 font-bold uppercase text-xs">Title</th>
+              <th class="py-4 px-4 font-bold uppercase text-xs">Body Preview</th>
+              <th class="py-4 px-4 font-bold uppercase text-xs text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr *ngFor="let post of posts" class="hover:bg-blue-50/50 transition">
+              <td class="py-4 px-4 text-gray-400 font-mono">{{ post.id }}</td>
+              <td class="py-4 px-4 font-semibold text-gray-800">
+                {{ post.title | slice: 0 : 25 }}...
+              </td>
+              <td class="py-4 px-4 text-gray-500 italic">{{ post.body | slice: 0 : 40 }}...</td>
+              <td class="py-4 px-4 text-center whitespace-nowrap">
+                <div class="flex justify-center gap-1.5">
+                  <button
+                    [routerLink]="['/posts', post.id]"
+                    class="p-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-600 hover:text-white transition"
+                  >
+                    View
+                  </button>
+                  <button
+                    [routerLink]="['/posts/edit', post.id]"
+                    class="p-2 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-600 hover:text-white transition"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    (click)="deletePost(post.id)"
+                    class="p-2 bg-red-100 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-between items-center mt-8 gap-4">
-      <div class="text-sm text-gray-500 font-medium order-2 md:order-1">
-        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ currentPage * pageSize }} of
-        {{ totalItems }}
-      </div>
-
-      <nav class="inline-flex rounded-lg shadow-sm border overflow-hidden order-1 md:order-2">
-        <button
-          (click)="changePage(currentPage - 1)"
-          [disabled]="currentPage === 1"
-          class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30 border-r"
-        >
-          Prev
-        </button>
-        <button
-          *ngFor="let page of [1, 2, 3]"
-          (click)="changePage(page)"
-          [ngClass]="{ 'bg-blue-600 text-white': currentPage === page }"
-          class="hidden sm:block px-4 py-2 border-r hover:bg-blue-50 transition"
-        >
-          {{ page }}
-        </button>
-        <button
-          (click)="changePage(currentPage + 1)"
-          [disabled]="currentPage * pageSize >= totalItems"
-          class="px-4 py-2 bg-white hover:bg-gray-50 disabled:opacity-30"
-        >
-          Next
-        </button>
-      </nav>
-    </div>
+    <!-- Pagination -->
+    <ng-container *ngIf="!isLoading && totalItems > 0 && (currentPage$ | async) as currentPage">
+      <app-pagination
+        [totalItems]="totalItems"
+        [pageSize]="pageSize"
+        [currentPage]="currentPage"
+        [pageSizeOptions]="[5, 10, 25]"
+        (pageChange)="changePage($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    </ng-container>
   </div>
 </div>

@@ -1,22 +1,11 @@
 import { Routes } from '@angular/router';
-import { PostsListComponent } from './posts/posts-list/posts-list.component';
-import { PostFormComponent } from './posts/post-form/post-form.component';
-import { PostDetailsComponent } from './posts/post-details/post-details.component';
+import { POSTS_ROUTES } from './posts/posts.routes';
 
 export const routes: Routes = [
-  { path: 'posts', component: PostsListComponent },
   {
-    path: 'posts/add',
-    component: PostFormComponent,
+    path: 'posts',
+    loadChildren: () => import('./posts/posts.routes').then((m) => m.POSTS_ROUTES),
   },
-  {
-    path: 'posts/edit/:id',
-    component: PostFormComponent,
-  },
-  { path: 'posts/:id', component: PostDetailsComponent },
-  {
-    path: '',
-    redirectTo: 'posts',
-    pathMatch: 'full',
-  },
+  { path: '', redirectTo: 'posts', pathMatch: 'full' },
+  { path: '**', redirectTo: 'posts' },
 ];

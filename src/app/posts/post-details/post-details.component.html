@@ -13,7 +13,7 @@
       <p
         class="text-gray-600 leading-relaxed text-lg bg-gray-50 p-4 rounded-xl border border-gray-100 italic"
       >
-        "{{ post.body }}"
+        {{ post.body }}
       </p>
 
       <div class="mt-10 pt-6 border-t border-gray-100 text-center sm:text-left">
@@ -40,10 +40,11 @@
     </div>
   </div>
 
-  <div *ngIf="!post" class="flex flex-col items-center gap-4">
+  <div *ngIf="isLoading" class="flex flex-col items-center gap-4">
     <div
       class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"
     ></div>
     <p class="text-gray-500 font-medium">Fetching post data...</p>
   </div>
+  <div *ngIf="!isLoading && !post" class="text-center text-gray-500">Post not found.</div>
 </div>
